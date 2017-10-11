@@ -6,38 +6,54 @@ use GuzzleHttp\Client;
 
 class Request
 {
-    public $curl;
+	public $curl;
 
-    protected $baseUri = 'https://api.dinero.dk/v1';
-    protected $authUri = 'https://authz.dinero.dk/dineroapi/oauth/token';
+	protected $baseUri     = 'https://iks.dks.dk/backend/api/v1/';
+	protected $testBaseUri = 'https://demo.dks.dk/iks/backend/api/v1/';
 
-    public function __construct($clientId = '', $clientSecret = '', $token = null, $org = null, $clientConfig = [])
-    {
-        $encodedClientIdAndSecret = base64_encode("{$clientId}:{$clientSecret}");
+	public function __construct( $token = null, $clientConfig = [], $testing = false ) {
+		$headers                 = [];
+		$headers['Content-Type'] = 'application/json';
 
-        $headers = [];
+		if ( $token !== null ) {
+			$headers['Authorization'] = "WebBruger {$token}";
+		}
 
-        if ($token !== null) {
-            $headers['Authorization'] = "Bearer {$token}";
-            $headers['Content-Type'] = 'application/json';
-        } else {
-            $headers['Authorization'] = "Basic {$encodedClientIdAndSecret}";
-            $headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        }
+		$this->curl = new Client( array_merge_recursive( [
+			'base_uri' => $testing ? $this->testBaseUri : $this->baseUri,
+			'headers'  => $headers,
+		], $clientConfig ) );
+	}
 
-        $this->curl = new Client(array_merge_recursive([
-            'base_uri' => $this->baseUri.($org !== null ? "/{$org}/" : ''),
-            'headers'  => $headers,
-        ], $clientConfig));
-    }
+	public function post( $endpoint, $data, $isJson = true ) {
+		try {
+			$response = $this->curl->post( $endpoint, $data )->getBody()->getContents();
 
-    /**
-     * Return a string with the oAuth url.
-     *
-     * @return string
-     */
-    public function getAuthUrl()
-    {
-        return $this->authUri;
-    }
+			if ( $isJson ) {
+				$response = json_decode( $response );
+			}
+
+			return $response;
+		} catch ( ClientException $exception ) {
+			throw new DKSRequestException( $exception );
+		} catch ( ServerException $exception ) {
+			throw new DKSServerException( $exception );
+		}
+	}
+
+	public function get( $endpoint, $data, $isJson = true ) {
+		try {
+			$response = $this->curl->get( $endpoint, $data )->getBody()->getContents();
+
+			if ( $isJson ) {
+				$response = json_decode( $response );
+			}
+
+			return $response;
+		} catch ( ClientException $exception ) {
+			throw new DKSRequestException( $exception );
+		} catch ( ServerException $exception ) {
+			throw new DKSServerException( $exception );
+		}
+	}
 }

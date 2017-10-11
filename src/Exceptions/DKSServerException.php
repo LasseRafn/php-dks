@@ -4,7 +4,7 @@ namespace LasseRafn\DKS\Exceptions;
 
 use GuzzleHttp\Exception\ServerException;
 
-class DineroServerException extends ServerException
+class DKSServerException extends ServerException
 {
     public function __construct(ServerException $clientException)
     {

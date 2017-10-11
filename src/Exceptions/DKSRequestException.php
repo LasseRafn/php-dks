@@ -4,7 +4,7 @@ namespace LasseRafn\DKS\Exceptions;
 
 use GuzzleHttp\Exception\ClientException;
 
-class DineroRequestException extends ClientException
+class DKSRequestException extends ClientException
 {
     public $validationErrors = [];
 

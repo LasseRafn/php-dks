@@ -4,7 +4,7 @@ namespace LasseRafn\DKS\Models;
 
 use LasseRafn\DKS\Utils\Model;
 
-class Product extends Model
+class DKSCase extends Model
 {
     protected $entity = 'products';
     protected $primaryKey = 'ProductGuid';

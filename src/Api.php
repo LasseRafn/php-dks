@@ -2,102 +2,102 @@
 
 namespace LasseRafn\DKS;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ServerException;
-use LasseRafn\DKS\Builders\ContactBuilder;
-use LasseRafn\DKS\Builders\CreditnoteBuilder;
-use LasseRafn\DKS\Builders\InvoiceBuilder;
-use LasseRafn\DKS\Builders\ProductBuilder;
-use LasseRafn\DKS\Exceptions\DineroRequestException;
-use LasseRafn\DKS\Exceptions\DineroServerException;
-use LasseRafn\DKS\Requests\ContactRequestBuilder;
-use LasseRafn\DKS\Requests\CreditnoteRequestBuilder;
-use LasseRafn\DKS\Requests\InvoiceRequestBuilder;
-use LasseRafn\DKS\Requests\ProductRequestBuilder;
+use LasseRafn\DKS\Models\DKSCase;
 use LasseRafn\DKS\Utils\Request;
 
 class Api
 {
-    protected $request;
+	/** @var Request */
+	protected $request;
 
-    private $clientId;
-    private $clientSecret;
+	private $authToken;
+	private $clientConfig;
+	private $test = false;
 
-    private $authToken;
-    private $org;
+	public function __construct( $token = null, $clientConfig = [] ) {
+		$this->setAuthToken( $token );
+		$this->clientConfig = $clientConfig;
 
-    public function __construct($clientId, $clientSecret, $token = null, $org = null, $clientConfig = [])
-    {
-        $this->clientId = $clientId;
-        $this->clientSecret = $clientSecret;
-        $this->authToken = $token;
-        $this->org = $org;
+		$this->auth();
+	}
 
-        $this->request = new Request($clientId, $clientSecret, $this->authToken, $this->org, $clientConfig);
-    }
+	public function test() {
+		$this->test = true;
+		$this->auth();
 
-    public function setAuth($token, $org = null)
-    {
-        $this->authToken = $token;
-        $this->org = $org;
+		return $this;
+	}
 
-        $this->request = new Request($this->clientId, $this->clientSecret, $this->authToken, $this->org);
-    }
+	public function production() {
+		$this->test = false;
+		$this->auth();
 
-    public function getAuthToken()
-    {
-        return $this->authToken;
-    }
+		return $this;
+	}
 
-    public function getAuthUrl()
-    {
-        return $this->request->getAuthUrl();
-    }
+	public function testConnection() {
+		return $this->request->get( 'test' );
+	}
 
-    public function getOrgId()
-    {
-        return $this->org;
-    }
+	public function requestToken( $customerNumber, $username, $password ) {
+		$token = $this->request->get( 'request-token', [
+			'query' => [
+				'CustomerNumber' => $customerNumber,
+				'Username'       => $username,
+				'Password'       => $password
+			],
+		], false );
 
-    public function auth($apiKey, $orgId = null)
-    {
-        try {
-            $response = json_decode($this->request->curl->post($this->request->getAuthUrl(), [
-                'form_params' => [
-                    'grant_type' => 'password',
-                    'scope'      => 'read write',
-                    'username'   => $apiKey,
-                    'password'   => $apiKey,
-                ],
-            ])->getBody()->getContents());
+		$this->setAuthToken( $token );
+		$this->auth();
 
-            $this->setAuth($response->access_token, $orgId);
+		return $this;
+	}
 
-            return $response;
-        } catch (ClientException $exception) {
-            throw new DineroRequestException($exception);
-        } catch (ServerException $exception) {
-            throw new DineroServerException($exception);
-        }
-    }
+	/**
+	 * Create case in DKS system. The API returns nothing,
+	 * so this method will return true if it succeeded, or
+	 * throw an exception with the error message if it failed.
+	 *
+	 * @param DKSCase $case
+	 *
+	 * Der skal foreligge en accept fra kreditor af følgende betingelser før at en sag må oprettes hos DKS:
+	 *
+	 * Som kreditor bekræfter jeg hermed:
+	 * - At der ved oprettelse af et inkassovarsel, er fremsendt faktura til debitor og at denne
+	 * ikke har gjort indsigelser mod kravet.
+	 *
+	 * - At der ved oprettelse af en inkassosag, er fremsendt faktura og inkassovarsel til debitor
+	 * og at denne ikke har gjort indsigelser mod kravet.
+	 *
+	 * Såfremt det senere viser sig, at de indtastede oplysninger ikke er korrekte, forbeholder DKS
+	 * A/S sig retten til at opkræve sagens omkostninger hos kreditor.
+	 *
+	 * Det må ikke kunne lade sig gøre at oprette en sag hos DKS uden at kreditor har accepteret ovenstående.
+	 *
+	 * @return bool
+	 */
+	public function sendCase( DKSCase $case ) {
+		$this->request->post( 'send-case', [
+			'json' => $case->toArray()
+		] );
 
-    public function contacts()
-    {
-        return new ContactRequestBuilder(new ContactBuilder($this->request));
-    }
+		return true;
+	}
 
-    public function invoices()
-    {
-        return new InvoiceRequestBuilder(new InvoiceBuilder($this->request));
-    }
+	public function statuses() {
+		return $this->request->get( 'status' );
+	}
 
-    public function products()
-    {
-        return new ProductRequestBuilder(new ProductBuilder($this->request));
-    }
+	private function auth() {
+		$this->request = new Request( $this->authToken, $this->clientConfig, $this->test );
+	}
 
-    public function creditnotes()
-    {
-        return new CreditnoteRequestBuilder(new CreditnoteBuilder($this->request));
-    }
+	private function setAuthToken( $token ) {
+		$this->authToken = $token;
+	}
+
+	private function getAuthToken() {
+		return $this->authToken;
+	}
 }
