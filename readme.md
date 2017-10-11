@@ -34,6 +34,24 @@ var_dump( $dks->statuses() ); // returns all case statuses
 
 #### Auth
 
+todo
+
+#### Test auth
+
+todo
+
+#### Create Case
+
+todo
+
+#### Get case statuses
+
+todo
+
+#### Production / Testing
+
+todo
+
 ### Requirements
 
 * PHP +7.0

@@ -17,23 +17,9 @@ class DKSServerException extends ServerException
 
             $message = '';
 
-            if (isset($messageResponse->message)) {
-                $message = "{$messageResponse->message}:";
-            } elseif (isset($messageResponse->error)) {
-                $message = "{$messageResponse->error}:";
-            }
-
-            if (isset($messageResponse->validationErrors)) {
-                foreach ($messageResponse->validationErrors as $key => $validationError) {
-                    $message .= "{$key}: {$validationError}\n";
-                }
-            }
-
-            if (isset($messageResponse->languageSpecificMessages)) {
-                foreach ($messageResponse->languageSpecificMessages as $error) {
-                    $message .= "{$error->property}: {$error->message}\n";
-                }
-            }
+	        if (isset($messageResponse->Message)) {
+		        $message = "{$messageResponse->Message}:";
+	        }
         }
 
         $request = $clientException->getRequest();

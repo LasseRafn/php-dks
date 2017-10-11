@@ -13,10 +13,10 @@ class Request
 
 	public function __construct( $token = null, $clientConfig = [], $testing = false ) {
 		$headers                 = [];
-		$headers['Content-Type'] = 'application/json';
 
 		if ( $token !== null ) {
 			$headers['Authorization'] = "WebBruger {$token}";
+			$headers['Content-Type'] = 'application/json';
 		}
 
 		$this->curl = new Client( array_merge_recursive( [
@@ -41,7 +41,7 @@ class Request
 		}
 	}
 
-	public function get( $endpoint, $data, $isJson = true ) {
+	public function get( $endpoint, $data = [], $isJson = true ) {
 		try {
 			$response = $this->curl->get( $endpoint, $data )->getBody()->getContents();
 

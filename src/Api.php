@@ -48,6 +48,8 @@ class Api
 			],
 		], false );
 
+		$token = trim($token, '"'); // Fix double-quotes wrapping the returned data.
+
 		$this->setAuthToken( $token );
 		$this->auth();
 
@@ -91,6 +93,8 @@ class Api
 
 	private function auth() {
 		$this->request = new Request( $this->authToken, $this->clientConfig, $this->test );
+
+		return $this;
 	}
 
 	private function setAuthToken( $token ) {
