@@ -3,6 +3,7 @@
 namespace LasseRafn\DKS;
 
 use LasseRafn\DKS\Models\CaseItem;
+use LasseRafn\DKS\Models\Status;
 use LasseRafn\DKS\Utils\Request;
 
 class Api
@@ -48,7 +49,7 @@ class Api
 			],
 		], false );
 
-		$token = trim($token, '"'); // Fix double-quotes wrapping the returned data.
+		$token = trim( $token, '"' ); // Fix double-quotes wrapping the returned data.
 
 		$this->setAuthToken( $token );
 		$this->auth();
@@ -87,8 +88,15 @@ class Api
 		return true;
 	}
 
+	/**
+	 * @return array|Status[]
+	 */
 	public function statuses() {
-		return $this->request->get( 'status' );
+		$statuses = $this->request->get( 'status' );
+
+		return array_map( function ( $status ) {
+			return new Status( $status );
+		}, $statuses );
 	}
 
 	private function auth() {

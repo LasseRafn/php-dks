@@ -3,6 +3,10 @@
 namespace LasseRafn\DKS\Utils;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
+use LasseRafn\DKS\Exceptions\DKSRequestException;
+use LasseRafn\DKS\Exceptions\DKSServerException;
 
 class Request
 {

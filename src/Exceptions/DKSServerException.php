@@ -6,27 +6,37 @@ use GuzzleHttp\Exception\ServerException;
 
 class DKSServerException extends ServerException
 {
-    public function __construct(ServerException $clientException)
-    {
-        $message = $clientException->getMessage();
+	public $validationErrors = [];
 
-        if ($clientException->hasResponse()) {
-            $messageResponse = json_decode($clientException->getResponse()
-                                                            ->getBody()
-                                                            ->getContents());
+	public function __construct( ServerException $clientException ) {
+		$message = $clientException->getMessage();
 
-            $message = '';
+		if ( $clientException->hasResponse() ) {
+			$messageResponse = json_decode( $clientException->getResponse()
+			                                                ->getBody()
+			                                                ->getContents() );
 
-	        if (isset($messageResponse->Message)) {
-		        $message = "{$messageResponse->Message}:";
-	        }
-        }
+			$message = '';
 
-        $request = $clientException->getRequest();
-        $response = $clientException->getResponse();
-        $previous = $clientException->getPrevious();
-        $handlerContext = $clientException->getHandlerContext();
+			if ( isset( $messageResponse->Message ) ) {
+				$message = "{$messageResponse->Message}";
+			}
 
-        parent::__construct($message, $request, $response, $previous, $handlerContext);
-    }
+			if ( isset( $messageResponse->ModelState ) ) {
+				foreach ( $messageResponse->ModelState as $item => $value ) {
+					$this->validationErrors[ $item ] = [];
+					foreach ( $value as $error ) {
+						$this->validationErrors[ $item ][] = $error;
+					}
+				}
+			}
+		}
+
+		$request        = $clientException->getRequest();
+		$response       = $clientException->getResponse();
+		$previous       = $clientException->getPrevious();
+		$handlerContext = $clientException->getHandlerContext();
+
+		parent::__construct( $message, $request, $response, $previous, $handlerContext );
+	}
 }

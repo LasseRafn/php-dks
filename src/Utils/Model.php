@@ -38,8 +38,16 @@ class Model
 				continue;
 			}
 
-			if ( $this->{$property->getName()} instanceof self ) {
+			if ( $this->{$property->getName()} instanceof Model ) {
 				$data[ $property->getName() ] = $this->{$property->getName()}->toArray();
+			} elseif ( is_array( $this->{$property->getName()} ) ) {
+				foreach ( $this->{$property->getName()} as $item => $value ) {
+					if ( $value instanceof Model ) {
+						$data[ $property->getName() ][ $item ] = $value->toArray();
+					} else {
+						$data[ $property->getName() ][ $item ] = $value;
+					}
+				}
 			} else {
 				$data[ $property->getName() ] = $this->{$property->getName()};
 			}
