@@ -21,14 +21,14 @@ class Api
 		$this->auth();
 	}
 
-	public function test() {
+	public function testMode() {
 		$this->test = true;
 		$this->auth();
 
 		return $this;
 	}
 
-	public function production() {
+	public function productionMode() {
 		$this->test = false;
 		$this->auth();
 

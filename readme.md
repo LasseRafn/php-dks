@@ -11,16 +11,29 @@
 
 ## Installation
 
-1. Require using composer
+Require using composer
 
+``` bash
+$ composer require lasserafn/php-dks
 ```
-composer require lasserafn/php-dks
+
+### Usage
+
+#### Example
+
+``` php
+<?php  
+require_once vendor/autoload.php';
+
+$dks = new \LasseRafn\DKS\Api();
+
+$dks->testMode()->requestToken('customerNumber', 'username', 'password');
+
+var_dump( $dks->statuses() ); // returns all case statuses
 ```
+
+#### Auth
 
 ### Requirements
 
 * PHP +7.0
-
-### Getting started
-
-* Todo
