@@ -2,7 +2,7 @@
 
 namespace LasseRafn\DKS;
 
-use LasseRafn\DKS\Models\DKSCase;
+use LasseRafn\DKS\Models\CaseItem;
 use LasseRafn\DKS\Utils\Request;
 
 class Api
@@ -61,7 +61,7 @@ class Api
 	 * so this method will return true if it succeeded, or
 	 * throw an exception with the error message if it failed.
 	 *
-	 * @param DKSCase $case
+	 * @param CaseItem $case
 	 *
 	 * Der skal foreligge en accept fra kreditor af følgende betingelser før at en sag må oprettes hos DKS:
 	 *
@@ -79,7 +79,7 @@ class Api
 	 *
 	 * @return bool
 	 */
-	public function sendCase( DKSCase $case ) {
+	public function sendCase( CaseItem $case ) {
 		$this->request->post( 'send-case', [
 			'json' => $case->toArray()
 		] );

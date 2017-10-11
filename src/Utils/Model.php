@@ -4,10 +4,6 @@ namespace LasseRafn\DKS\Utils;
 
 class Model
 {
-	protected $entity;
-	protected $primaryKey;
-	protected $modelClass = self::class;
-
 	public function __construct( $data = [] ) {
 		$data = (array) $data;
 
@@ -38,7 +34,15 @@ class Model
 
 		/** @var \ReflectionProperty $property */
 		foreach ( $properties as $property ) {
-			$data[ $property->getName() ] = $this->{$property->getName()};
+			if ( $this->{$property->getName()} === null ) {
+				continue;
+			}
+
+			if ( $this->{$property->getName()} instanceof self ) {
+				$data[ $property->getName() ] = $this->{$property->getName()}->toArray();
+			} else {
+				$data[ $property->getName() ] = $this->{$property->getName()};
+			}
 		}
 
 		return $data;
