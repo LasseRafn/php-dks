@@ -1,6 +1,6 @@
 <?php
 
-namespace LasseRafn\Dinero\Utils;
+namespace LasseRafn\DKS\Utils;
 
 use GuzzleHttp\Client;
 

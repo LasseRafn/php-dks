@@ -1,22 +1,22 @@
 <?php
 
-namespace LasseRafn\Dinero;
+namespace LasseRafn\DKS;
 
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
-use LasseRafn\Dinero\Builders\ContactBuilder;
-use LasseRafn\Dinero\Builders\CreditnoteBuilder;
-use LasseRafn\Dinero\Builders\InvoiceBuilder;
-use LasseRafn\Dinero\Builders\ProductBuilder;
-use LasseRafn\Dinero\Exceptions\DineroRequestException;
-use LasseRafn\Dinero\Exceptions\DineroServerException;
-use LasseRafn\Dinero\Requests\ContactRequestBuilder;
-use LasseRafn\Dinero\Requests\CreditnoteRequestBuilder;
-use LasseRafn\Dinero\Requests\InvoiceRequestBuilder;
-use LasseRafn\Dinero\Requests\ProductRequestBuilder;
-use LasseRafn\Dinero\Utils\Request;
+use LasseRafn\DKS\Builders\ContactBuilder;
+use LasseRafn\DKS\Builders\CreditnoteBuilder;
+use LasseRafn\DKS\Builders\InvoiceBuilder;
+use LasseRafn\DKS\Builders\ProductBuilder;
+use LasseRafn\DKS\Exceptions\DineroRequestException;
+use LasseRafn\DKS\Exceptions\DineroServerException;
+use LasseRafn\DKS\Requests\ContactRequestBuilder;
+use LasseRafn\DKS\Requests\CreditnoteRequestBuilder;
+use LasseRafn\DKS\Requests\InvoiceRequestBuilder;
+use LasseRafn\DKS\Requests\ProductRequestBuilder;
+use LasseRafn\DKS\Utils\Request;
 
-class Dinero
+class Api
 {
     protected $request;
 

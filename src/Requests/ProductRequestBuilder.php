@@ -1,9 +1,9 @@
 <?php
 
-namespace LasseRafn\Dinero\Requests;
+namespace LasseRafn\DKS\Requests;
 
-use LasseRafn\Dinero\Builders\Builder;
-use LasseRafn\Dinero\Utils\RequestBuilder;
+use LasseRafn\DKS\Builders\Builder;
+use LasseRafn\DKS\Utils\RequestBuilder;
 
 class ProductRequestBuilder extends RequestBuilder
 {

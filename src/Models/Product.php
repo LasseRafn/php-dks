@@ -1,8 +1,8 @@
 <?php
 
-namespace LasseRafn\Dinero\Models;
+namespace LasseRafn\DKS\Models;
 
-use LasseRafn\Dinero\Utils\Model;
+use LasseRafn\DKS\Utils\Model;
 
 class Product extends Model
 {

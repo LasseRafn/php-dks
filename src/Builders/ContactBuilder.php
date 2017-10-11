@@ -1,8 +1,9 @@
 <?php
 
-namespace LasseRafn\Dinero\Builders;
+namespace LasseRafn\DKS\Builders;
 
-use LasseRafn\Dinero\Models\Contact;
+use LasseRafn\DKS\Models\Contact;
+use LasseRafn\DKS\Utils\Builder;
 
 class ContactBuilder extends Builder
 {

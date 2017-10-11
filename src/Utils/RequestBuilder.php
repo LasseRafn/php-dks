@@ -1,9 +1,9 @@
 <?php
 
-namespace LasseRafn\Dinero\Utils;
+namespace LasseRafn\DKS\Utils;
 
-use LasseRafn\Dinero\Builders\Builder;
-use LasseRafn\Dinero\Responses\PaginatedResponse;
+use LasseRafn\DKS\Builders\Builder;
+use LasseRafn\DKS\Responses\PaginatedResponse;
 
 class RequestBuilder
 {
